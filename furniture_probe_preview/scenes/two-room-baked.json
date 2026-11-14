@@ -1,0 +1,353 @@
+{
+  "version": 1,
+  "name": "two-room",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 8
+  },
+  "fallback": "nearest",
+  "walls": [
+    {
+      "ax": 0,
+      "ay": 0,
+      "bx": 12,
+      "by": 0
+    },
+    {
+      "ax": 0,
+      "ay": 8,
+      "bx": 12,
+      "by": 8
+    },
+    {
+      "ax": 0,
+      "ay": 0,
+      "bx": 0,
+      "by": 8
+    },
+    {
+      "ax": 12,
+      "ay": 0,
+      "bx": 12,
+      "by": 8
+    },
+    {
+      "ax": 6.0,
+      "ay": 0.0,
+      "bx": 6.0,
+      "by": 3.3
+    },
+    {
+      "ax": 6.0,
+      "ay": 4.7,
+      "bx": 6.0,
+      "by": 8.0
+    }
+  ],
+  "partitions": [
+    {
+      "ax": 6.0,
+      "ay": 0.0,
+      "bx": 6.0,
+      "by": 3.3
+    },
+    {
+      "ax": 6.0,
+      "ay": 4.7,
+      "bx": 6.0,
+      "by": 8.0
+    }
+  ],
+  "lights": [
+    {
+      "name": "bright-a",
+      "x": 1.8,
+      "y": 1.6,
+      "color": [
+        1.0,
+        0.96,
+        0.88
+      ],
+      "power": 28.0,
+      "radius": 5.5
+    },
+    {
+      "name": "bright-b",
+      "x": 1.8,
+      "y": 6.4,
+      "color": [
+        1.0,
+        0.96,
+        0.88
+      ],
+      "power": 28.0,
+      "radius": 5.5
+    },
+    {
+      "name": "bright-c",
+      "x": 4.0,
+      "y": 4.0,
+      "color": [
+        1.0,
+        0.96,
+        0.88
+      ],
+      "power": 16.0,
+      "radius": 3.5
+    },
+    {
+      "name": "dim-a",
+      "x": 9.5,
+      "y": 4.0,
+      "color": [
+        0.25,
+        0.3,
+        0.55
+      ],
+      "power": 6.0,
+      "radius": 5.5
+    }
+  ],
+  "zones": [
+    {
+      "name": "bright room",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 8
+      },
+      "target_irradiance": [
+        1.0,
+        0.95,
+        0.85
+      ]
+    },
+    {
+      "name": "dim room",
+      "rect": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 8
+      },
+      "target_irradiance": [
+        0.12,
+        0.15,
+        0.3
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "name": "table-1",
+      "kind": "table",
+      "x": 3.0,
+      "y": 4.0,
+      "w": 1.8,
+      "h": 1.0,
+      "rotation": 0.0,
+      "material": {
+        "name": "oak",
+        "albedo": [
+          0.36,
+          0.22,
+          0.11
+        ],
+        "roughness": 0.55,
+        "metalness": 0.0
+      }
+    },
+    {
+      "name": "chair-a",
+      "kind": "chair",
+      "x": 3.0,
+      "y": 2.9,
+      "w": 0.5,
+      "h": 0.5,
+      "rotation": 0.0,
+      "material": {
+        "name": "blue fabric",
+        "albedo": [
+          0.05,
+          0.1,
+          0.32
+        ],
+        "roughness": 0.85,
+        "metalness": 0.0
+      }
+    },
+    {
+      "name": "chair-b",
+      "kind": "chair",
+      "x": 3.0,
+      "y": 5.1,
+      "w": 0.5,
+      "h": 0.5,
+      "rotation": 180.0,
+      "material": {
+        "name": "blue fabric",
+        "albedo": [
+          0.05,
+          0.1,
+          0.32
+        ],
+        "roughness": 0.85,
+        "metalness": 0.0
+      }
+    },
+    {
+      "name": "lamp-table",
+      "kind": "table",
+      "x": 9.5,
+      "y": 4.0,
+      "w": 0.8,
+      "h": 0.8,
+      "rotation": 0.0,
+      "material": {
+        "name": "dark metal",
+        "albedo": [
+          0.18,
+          0.18,
+          0.2
+        ],
+        "roughness": 0.3,
+        "metalness": 0.8
+      }
+    }
+  ],
+  "probes": [
+    {
+      "id": "B1",
+      "x": 1.5,
+      "y": 1.5,
+      "coverage": 3.0,
+      "irradiance": [
+        24.645955838665547,
+        23.660117605118927,
+        21.68844113802568
+      ],
+      "component": 0,
+      "baked": true
+    },
+    {
+      "id": "B2",
+      "x": 4.5,
+      "y": 1.5,
+      "coverage": 3.0,
+      "irradiance": [
+        3.9325968679572925,
+        3.7752929932390007,
+        3.460685243802417
+      ],
+      "component": 0,
+      "baked": true
+    },
+    {
+      "id": "B3",
+      "x": 1.5,
+      "y": 6.5,
+      "coverage": 3.0,
+      "irradiance": [
+        24.645955838665547,
+        23.660117605118927,
+        21.68844113802568
+      ],
+      "component": 0,
+      "baked": true
+    },
+    {
+      "id": "B4",
+      "x": 4.5,
+      "y": 6.5,
+      "coverage": 3.0,
+      "irradiance": [
+        3.9325968679572925,
+        3.7752929932390007,
+        3.460685243802417
+      ],
+      "component": 0,
+      "baked": true
+    },
+    {
+      "id": "B5",
+      "x": 4.6,
+      "y": 4.0,
+      "coverage": 2.6,
+      "irradiance": [
+        11.672408913100167,
+        11.205654392253058,
+        10.272499939751086
+      ],
+      "component": 0,
+      "baked": true
+    },
+    {
+      "id": "D0",
+      "x": 7.0,
+      "y": 4.0,
+      "coverage": 2.6,
+      "irradiance": [
+        0.2715726224785939,
+        0.3215460986016108,
+        0.5735840034030464
+      ],
+      "component": 1,
+      "baked": true
+    },
+    {
+      "id": "D1",
+      "x": 7.5,
+      "y": 1.5,
+      "coverage": 3.0,
+      "irradiance": [
+        0.09900790278522452,
+        0.11880948334226941,
+        0.21781738612749396
+      ],
+      "component": 1,
+      "baked": true
+    },
+    {
+      "id": "D2",
+      "x": 10.5,
+      "y": 1.5,
+      "coverage": 3.0,
+      "irradiance": [
+        0.20153055046818236,
+        0.24183666056181882,
+        0.4433672110300012
+      ],
+      "component": 1,
+      "baked": true
+    },
+    {
+      "id": "D3",
+      "x": 7.5,
+      "y": 6.5,
+      "coverage": 3.0,
+      "irradiance": [
+        0.09900790278522452,
+        0.11880948334226941,
+        0.21781738612749396
+      ],
+      "component": 1,
+      "baked": true
+    },
+    {
+      "id": "D4",
+      "x": 10.5,
+      "y": 6.5,
+      "coverage": 3.0,
+      "irradiance": [
+        0.20153055046818236,
+        0.24183666056181882,
+        0.4433672110300012
+      ],
+      "component": 1,
+      "baked": true
+    }
+  ]
+}

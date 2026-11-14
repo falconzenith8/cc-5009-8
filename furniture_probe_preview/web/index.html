@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>家具陈列光照探针预览器</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>家具陈列光照探针预览器</h1>
+  <div class="toolbar">
+    <label>房间
+      <select id="preset">
+        <option value="uniform">均匀房间</option>
+        <option value="two-room">明暗两室</option>
+        <option value="sparse">探针稀疏区域</option>
+      </select>
+    </label>
+    <label>叠加层
+      <select id="overlay">
+        <option value="none">无</option>
+        <option value="leak">泄漏 / 回退区域</option>
+        <option value="reference">参考直接光对比</option>
+      </select>
+    </label>
+    <label>回退策略
+      <select id="fallback">
+        <option value="nearest">最近同室探针</option>
+        <option value="dark">显式置暗</option>
+        <option value="error">标记为错误</option>
+      </select>
+    </label>
+    <button id="saveBtn">保存场景</button>
+    <button id="loadBtn">重新打开场景</button>
+    <input id="scenePath" value="scenes/session.json">
+  </div>
+</header>
+
+<main>
+  <section id="canvasWrap">
+    <canvas id="plan" width="760" height="640"></canvas>
+    <div id="legend">
+      <span><i class="dot probe"></i>探针（数字=连通分量）</span>
+      <span><i class="dot furn"></i>桌椅（可拖拽）</span>
+      <span><i class="dot risk"></i>隔墙漏光风险</span>
+      <span><i class="dot leak"></i>探针近似偏差/回退单元</span>
+    </div>
+  </section>
+
+  <aside id="side">
+    <div id="anomalyPanel" class="panel">
+      <h2>异常提示（引擎实算）</h2>
+      <pre id="anomalies">加载中…</pre>
+    </div>
+    <div class="panel">
+      <h2>探针权重（当前选中点）</h2>
+      <div id="probeWeights"><p>点击平面图或拖拽家具查看插值权重。</p></div>
+    </div>
+    <div class="panel" id="materialPanel">
+      <h2>材质预览窗</h2>
+      <select id="furniturePick"></select>
+      <div class="swatches">
+        <div>
+          <canvas id="matProbe" width="120" height="90"></canvas>
+          <p>探针插值着色</p>
+        </div>
+        <div>
+          <canvas id="matRef" width="120" height="90"></canvas>
+          <p>直接光参考着色</p>
+        </div>
+      </div>
+      <pre id="matInfo"></pre>
+    </div>
+  </aside>
+</main>
+<script src="app.js"></script>
+</body>
+</html>
