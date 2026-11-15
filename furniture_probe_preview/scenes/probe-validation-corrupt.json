@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "name": "probe-validation-corrupt",
+  "bounds": {
+    "x": 0,
+    "y": 0,
+    "w": 12,
+    "h": 8
+  },
+  "fallback": "error",
+  "walls": [
+    {
+      "ax": 0,
+      "ay": 0,
+      "bx": 12,
+      "by": 0
+    },
+    {
+      "ax": 0,
+      "ay": 8,
+      "bx": 12,
+      "by": 8
+    },
+    {
+      "ax": 0,
+      "ay": 0,
+      "bx": 0,
+      "by": 8
+    },
+    {
+      "ax": 12,
+      "ay": 0,
+      "bx": 12,
+      "by": 8
+    },
+    {
+      "ax": 6.0,
+      "ay": 0.0,
+      "bx": 6.0,
+      "by": 3.0
+    },
+    {
+      "ax": 6.0,
+      "ay": 5.0,
+      "bx": 6.0,
+      "by": 8.0
+    }
+  ],
+  "partitions": [
+    {
+      "ax": 6.0,
+      "ay": 0.0,
+      "bx": 6.0,
+      "by": 3.0
+    },
+    {
+      "ax": 6.0,
+      "ay": 5.0,
+      "bx": 6.0,
+      "by": 8.0
+    }
+  ],
+  "lights": [
+    {
+      "name": "analytic-key",
+      "x": 2.5,
+      "y": 4.0,
+      "color": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "power": 20.0,
+      "radius": 8.0
+    }
+  ],
+  "zones": [
+    {
+      "name": "lit room",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 8
+      },
+      "target_irradiance": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "sealed room",
+      "rect": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 8
+      },
+      "target_irradiance": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "furniture": [
+    {
+      "name": "bright-table",
+      "kind": "table",
+      "x": 2.0,
+      "y": 3.0,
+      "w": 1.0,
+      "h": 1.0,
+      "rotation": 0.0,
+      "material": {
+        "name": "oak",
+        "albedo": [
+          0.36,
+          0.22,
+          0.11
+        ],
+        "roughness": 0.55,
+        "metalness": 0.0
+      }
+    },
+    {
+      "name": "dim-table",
+      "kind": "table",
+      "x": 10.0,
+      "y": 1.5,
+      "w": 1.0,
+      "h": 1.0,
+      "rotation": 0.0,
+      "material": {
+        "name": "dark metal",
+        "albedo": [
+          0.18,
+          0.18,
+          0.2
+        ],
+        "roughness": 0.3,
+        "metalness": 0.8
+      }
+    }
+  ],
+  "probes": [
+    {
+      "id": "VA",
+      "x": 2.0,
+      "y": 3.0,
+      "coverage": 3.5,
+      "irradiance": [
+        60.0,
+        60.0,
+        60.0
+      ],
+      "component": 0,
+      "baked": true
+    },
+    {
+      "id": "VB",
+      "x": 2.0,
+      "y": 6.5,
+      "coverage": 3.5,
+      "irradiance": [
+        7.0560413314157975,
+        7.0560413314157975,
+        7.0560413314157975
+      ],
+      "component": 0,
+      "baked": true
+    },
+    {
+      "id": "VC",
+      "x": 4.5,
+      "y": 4.0,
+      "coverage": 3.5,
+      "irradiance": [
+        9.4921875,
+        9.4921875,
+        9.4921875
+      ],
+      "component": 0,
+      "baked": true
+    },
+    {
+      "id": "VD",
+      "x": 7.5,
+      "y": 4.0,
+      "coverage": 3.5,
+      "irradiance": [
+        0.889892578125,
+        0.889892578125,
+        0.889892578125
+      ],
+      "component": 1,
+      "baked": true
+    },
+    {
+      "id": "VE",
+      "x": 10.0,
+      "y": 1.5,
+      "coverage": 3.5,
+      "irradiance": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "component": 1,
+      "baked": true
+    },
+    {
+      "id": "VF",
+      "x": 10.0,
+      "y": 6.5,
+      "coverage": 3.5,
+      "irradiance": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "component": 1,
+      "baked": true
+    }
+  ]
+}

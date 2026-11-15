@@ -43,3 +43,10 @@ td, th { padding: 2px 4px; border-bottom: 1px solid #2c313a; text-align: left; }
 .warn { color: #ffb86b; }
 .err { color: #ff6b6b; }
 .ok { color: #7ee2a8; }
+.fail { color: #ff7a7a; }
+.regression { border: 1px solid #3a4150; border-radius: 6px; padding: 8px; margin: 8px 0; }
+.regression h3 { font-size: 12px; margin: 0 0 6px; color: #9fc1ff; }
+.regbuttons { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+#regressionOut { max-height: 220px; }
+#regressionOut.ok { border-left: 3px solid #7ee2a8; padding-left: 6px; }
+#regressionOut.fail { border-left: 3px solid #ff6b6b; padding-left: 6px; }

@@ -14,6 +14,8 @@
         <option value="uniform">均匀房间</option>
         <option value="two-room">明暗两室</option>
         <option value="sparse">探针稀疏区域</option>
+        <option value="validation">探针验证场景（正样例）</option>
+        <option value="validation-corrupt">探针验证场景（受控损坏）</option>
       </select>
     </label>
     <label>叠加层
@@ -59,6 +61,15 @@
     <div class="panel" id="materialPanel">
       <h2>材质预览窗</h2>
       <select id="furniturePick"></select>
+      <div class="regression">
+        <h3>家具探针回归样例（内核驱动）</h3>
+        <div class="regbuttons">
+          <button id="openValidation">打开正样例</button>
+          <button id="openCorrupt">打开受控损坏样例</button>
+          <button id="runRegression">运行回归检查</button>
+        </div>
+        <pre id="regressionOut">尚未运行。</pre>
+      </div>
       <div class="swatches">
         <div>
           <canvas id="matProbe" width="120" height="90"></canvas>

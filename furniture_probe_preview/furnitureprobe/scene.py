@@ -317,8 +317,88 @@ def make_sparse_room() -> Scene:
                  probes, partitions=partitions, fallback="nearest")
 
 
+# ---------------------------------------------------------------------------
+# Probe-validation scenes (acceptance / regression)
+#
+# One analytic light, one partition with a single known doorway and probes
+# whose correct baked values can be derived on paper.  The corrupt variant
+# injects a controlled error into one furniture probe so the acceptance
+# checks have a guaranteed-negative sample.
+# ---------------------------------------------------------------------------
+
+VALIDATION_POWER = 20.0
+VALIDATION_RADIUS = 8.0
+VALIDATION_LIGHT_POS = (2.5, 4.0)
+VALIDATION_COVERAGE = 3.5
+# Corrupt value forced onto probe VA by the negative sample: high enough to
+# violate the documented lighting-error budget at the bright table.
+VALIDATION_CORRUPT_VALUE = [60.0, 60.0, 60.0]
+
+
+def _validation_room() -> Scene:
+    bounds = Rect(0, 0, 12, 8)
+    walls = _outer_walls(bounds, [])
+    # Partition x=6 with a 2 m doorway, y in [3, 5].
+    partitions = _partition(6.0, 0.0, 8.0, [(3.0, 5.0)])
+    walls += partitions
+    lights = [
+        Light("analytic-key", VALIDATION_LIGHT_POS[0],
+              VALIDATION_LIGHT_POS[1], [1.0, 1.0, 1.0],
+              VALIDATION_POWER, VALIDATION_RADIUS),
+    ]
+    probes = [
+        Probe("VA", 2.0, 3.0, VALIDATION_COVERAGE),
+        Probe("VB", 2.0, 6.5, VALIDATION_COVERAGE),
+        Probe("VC", 4.5, 4.0, VALIDATION_COVERAGE),
+        Probe("VD", 7.5, 4.0, VALIDATION_COVERAGE),
+        Probe("VE", 10.0, 1.5, VALIDATION_COVERAGE),
+        Probe("VF", 10.0, 6.5, VALIDATION_COVERAGE),
+    ]
+    furniture = [
+        # Sits exactly on probe VA: the positive/negative regression sample.
+        Furniture("bright-table", "table", 2.0, 3.0, 1.0, 1.0, 0.0, WOOD),
+        # Sits exactly on probe VE, behind the solid part of the partition.
+        Furniture("dim-table", "table", 10.0, 1.5, 1.0, 1.0, 0.0,
+                  DARK_METAL),
+    ]
+    zones = [
+        Zone("lit room", Rect(0, 0, 6, 8), [1.0, 1.0, 1.0]),
+        Zone("sealed room", Rect(6, 0, 6, 8), [0.0, 0.0, 0.0]),
+    ]
+    scene = Scene("probe-validation", bounds, walls, lights, zones,
+                  furniture, probes, partitions=partitions,
+                  fallback="error")
+    # Bake now so saved scenes carry authoritative values and the GUI can
+    # open them without a hidden rebake.
+    from .lighting import LightingEngine
+    LightingEngine(scene).bake_probes()
+    return scene
+
+
+def make_validation_room() -> Scene:
+    """Analytic validation room with correctly baked probes (positive)."""
+    return _validation_room()
+
+
+def make_validation_room_corrupt() -> Scene:
+    """Same room, but probe VA carries a controlled bad baked value.
+
+    The value is authored (``baked=True``) so it survives rebuilds, just as
+    an imported-but-wrong probe would; the regression checks must expose it
+    through weights and lighting error rather than silently accept it.
+    """
+    scene = _validation_room()
+    bad = next(p for p in scene.probes if p.id == "VA")
+    bad.irradiance = list(VALIDATION_CORRUPT_VALUE)
+    bad.baked = True
+    scene.name = "probe-validation-corrupt"
+    return scene
+
+
 PRESETS = {
     "uniform": make_uniform_room,
     "two-room": make_two_room,
     "sparse": make_sparse_room,
+    "validation": make_validation_room,
+    "validation-corrupt": make_validation_room_corrupt,
 }

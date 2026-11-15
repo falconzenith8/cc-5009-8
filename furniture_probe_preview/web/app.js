@@ -10,6 +10,7 @@ let leakData = null;
 let selected = null;          // {kind:"probe"|"furniture", id}
 let hoverPoint = null;
 let drag = null;
+let regressionData = null;    // kernel-driven verdict from /api/regression
 
 const api = async (path, body) => {
   const opt = body
@@ -42,6 +43,10 @@ const rgbCss = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
 
 async function loadPreset(name) {
   scene = await api("/api/load-preset", { preset: name });
+  document.getElementById("preset").value = name;
+  regressionData = null;
+  document.getElementById("regressionOut").textContent = "尚未运行。";
+  document.getElementById("regressionOut").className = "";
   await refreshComputed();
   populateFurniture();
   selected = null;
@@ -124,6 +129,9 @@ function drawWalls() {
 }
 
 function drawProbes() {
+  const failed = new Set(
+    regressionData ? regressionData.failed_probe_ids : []
+  );
   for (const p of scene.probes) {
     const [x, y] = toPx(p.x, p.y);
     // coverage radius
@@ -138,14 +146,22 @@ function drawProbes() {
     ctx.arc(x, y, 7, 0, Math.PI * 2);
     ctx.fillStyle = "#37e0c8";
     ctx.fill();
+    // Kernel-driven failure feedback routes back to the probe itself.
+    if (failed.has(p.id)) {
+      ctx.beginPath();
+      ctx.arc(x, y, 11, 0, Math.PI * 2);
+      ctx.strokeStyle = "#ff5d5d";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
     ctx.fillStyle = "#0d0f13";
     ctx.font = "bold 9px sans-serif";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(String(p.component), x, y + 0.5);
-    ctx.fillStyle = "#b9f5ea";
+    ctx.fillStyle = failed.has(p.id) ? "#ff8a8a" : "#b9f5ea";
     ctx.font = "9px sans-serif";
-    ctx.fillText(p.id, x, y - 12);
+    ctx.fillText(p.id + (failed.has(p.id) ? " ✕" : ""), x, y - 12);
   }
 }
 
@@ -269,8 +285,16 @@ async function refreshMaterial() {
     `探针辐照度(线性): ${d.probe_irradiance.map(v => v.toFixed(3)).join(", ")}\n` +
     `参考辐照度(线性): ${d.reference_irradiance.map(v => v.toFixed(3)).join(", ")}\n` +
     `权重: ${Object.entries(d.weights).map(([k, v]) => `${k}=${(v * 100).toFixed(1)}%`).join(" ") || "无"}\n` +
-    `隔墙拒绝探针: ${d.rejected_probes.join(", ") || "无"}` +
+    `隔墙拒绝探针: ${d.rejected_probes.join(", ") || "无"}\n` +
+    `回归判定(内核): ${d.regression.passed ? "通过 ✓" : "失败 ✕"}\n` +
+    `主导探针: ${d.regression.dominant_probe ?? "无"}  ` +
+    `照明误差: ${d.regression.lighting_error.toFixed(4)} / 预算 ${d.regression.error_budget}` +
+    (d.regression.failures.length
+      ? "\n[失败原因] " + d.regression.failures.join("; ")
+      : "") +
     (d.leak_risk ? "\n[提示] 该点邻近隔墙，存在跨侧探针被排除的漏光风险。" : "");
+  paintSwatch(document.getElementById("matProbe"), d.shaded_srgb,
+    !d.regression.passed);
 }
 
 function paintSwatch(cv, srgb, warn) {
@@ -282,6 +306,48 @@ function paintSwatch(cv, srgb, warn) {
     c.lineWidth = 4;
     c.strokeRect(2, 2, cv.width - 4, cv.height - 4);
   }
+}
+
+// ---------------------------------------------------------------------------
+// Kernel-driven furniture probe regression (opened from this preview window)
+// ---------------------------------------------------------------------------
+
+async function runRegressionCheck() {
+  const out = document.getElementById("regressionOut");
+  try {
+    regressionData = await api("/api/regression");
+  } catch (err) {
+    out.className = "fail";
+    out.textContent = "回归检查请求失败: " + err.message;
+    return;
+  }
+  const lines = [];
+  lines.push(regressionData.passed
+    ? "总体判定: 通过 ✓"
+    : "总体判定: 失败 ✕");
+  for (const c of regressionData.checks) {
+    lines.push("");
+    lines.push(`· ${c.furniture} @ (${c.position[0]}, ${c.position[1]}) ` +
+      `-> ${c.passed ? "通过" : "失败"}`);
+    lines.push(`  主导探针: ${c.dominant_probe ?? "无"}  状态: ${c.status}`);
+    lines.push(`  权重: ${Object.entries(c.weights)
+      .map(([k, v]) => `${k}=${(v * 100).toFixed(1)}%`).join(" ") || "无"}`);
+    lines.push(`  探针辐照度: ${c.probe_irradiance
+      .map(v => v.toFixed(3)).join(", ")}`);
+    lines.push(`  参考辐照度: ${c.reference_irradiance
+      .map(v => v.toFixed(3)).join(", ")}`);
+    lines.push(`  照明误差: ${c.lighting_error.toFixed(4)} ` +
+      `(预算 ${c.error_budget})`);
+    if (c.rejected_probes.length)
+      lines.push(`  隔墙拒绝探针: ${c.rejected_probes.join(", ")}`);
+    for (const f of c.failures) lines.push(`  [失败原因] ${f}`);
+  }
+  if (regressionData.failed_probe_ids.length)
+    lines.push("", "失败反馈已定位到探针: " +
+      regressionData.failed_probe_ids.join(", "));
+  out.className = regressionData.passed ? "ok" : "fail";
+  out.textContent = lines.join("\n");
+  draw();
 }
 
 // ---------------------------------------------------------------------------
@@ -380,5 +446,11 @@ document.getElementById("loadBtn").addEventListener("click", async () => {
     alert("场景已重新打开，探针解释与物体位置已恢复。");
   } catch (e) { alert(e.message); }
 });
+document.getElementById("openValidation").addEventListener("click",
+  () => loadPreset("validation").then(runRegressionCheck));
+document.getElementById("openCorrupt").addEventListener("click",
+  () => loadPreset("validation-corrupt").then(runRegressionCheck));
+document.getElementById("runRegression").addEventListener("click",
+  runRegressionCheck);
 
 loadPreset("uniform");

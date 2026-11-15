@@ -75,9 +75,12 @@ class Image:
                 round(255 * linear_to_srgb(aces_tone_map(linear[k] * EXPOSURE)))
             )
 
-    def save_ppm(self, path: str | Path) -> None:
+    def ppm_bytes(self) -> bytes:
         header = f"P6\n{self.w} {self.h}\n255\n".encode()
-        Path(path).write_bytes(header + bytes(self.px))
+        return header + bytes(self.px)
+
+    def save_ppm(self, path: str | Path) -> None:
+        Path(path).write_bytes(self.ppm_bytes())
 
 
 class Renderer:

@@ -16,6 +16,7 @@ from urllib.parse import urlparse
 
 from .geometry import linear_to_srgb
 from .lighting import LightingEngine
+from .regression import evaluate_furniture, run_regression
 from .render import Renderer, aces_tone_map, EXPOSURE
 from .scene import Scene, PRESETS, Probe
 
@@ -106,6 +107,9 @@ class Handler(BaseHTTPRequestHandler):
         if route.startswith("/api/leak-report"):
             with sess.lock:
                 return self._json(self._leak_payload())
+        if route.startswith("/api/regression"):
+            with sess.lock:
+                return self._json(run_regression(sess.scene))
         if route.startswith("/api/material/"):
             name = route.rsplit("/", 1)[-1]
             with sess.lock:
@@ -263,6 +267,8 @@ class Handler(BaseHTTPRequestHandler):
         preview["reference_shaded_srgb"] = _srgb_swatch(
             preview["reference_shaded_linear"]
         )
+        # Kernel-driven regression verdict for this exact furniture sample.
+        preview["regression"] = evaluate_furniture(sess.engine, name)
         return preview
 
 

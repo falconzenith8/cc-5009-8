@@ -114,6 +114,18 @@ def cmd_serve(args) -> int:
     return 0
 
 
+def cmd_acceptance(args) -> int:
+    """Automated entry point for the interpolation-correctness acceptance."""
+    import unittest
+
+    loader = unittest.TestLoader()
+    suite = loader.loadTestsFromName("tests.test_interpolation_acceptance")
+    result = unittest.TextTestRunner(verbosity=args.verbose and 2 or 1).run(
+        suite
+    )
+    return 0 if result.wasSuccessful() else 1
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="furniture-probe",
@@ -156,6 +168,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--host", default="127.0.0.1")
     p.add_argument("--port", type=int, default=8765)
     p.set_defaults(func=cmd_serve)
+
+    p = sub.add_parser(
+        "acceptance",
+        help="run the interpolation-correctness acceptance test suite",
+    )
+    p.add_argument("-v", "--verbose", action="store_true")
+    p.set_defaults(func=cmd_acceptance)
     return parser
 
 
